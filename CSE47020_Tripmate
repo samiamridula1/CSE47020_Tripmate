@@ -1,5 +1,1 @@
-git add README.md CONTRIBUTORS.md
-git commit -m "Add README and CONTRIBUTORS file for CSE470 project"
-git push origin main
-
-
+\
