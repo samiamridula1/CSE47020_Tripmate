@@ -1,0 +1,36 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+function ProfileForm({ firebaseUid }) {
+  const [profile, setProfile] = useState({
+    name: "",
+    avatar: "",
+    bio: "",
+    interests: []
+  });
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const res = await axios.get(`http://localhost:5000/users/${firebaseUid}`);
+      if(res.data) setProfile(res.data);
+    };
+    fetchProfile();
+  }, [firebaseUid]);
+
+  const handleSave = async () => {
+    await axios.post("http://localhost:5000/users/profile", { firebaseUid, ...profile });
+    alert("Profile saved");
+  };
+
+  return (
+    <div className="border p-4 rounded-md space-y-2">
+      <input value={profile.name} onChange={e => setProfile({...profile, name:e.target.value})} placeholder="Name" className="border p-2 w-full" />
+      <input value={profile.avatar} onChange={e => setProfile({...profile, avatar:e.target.value})} placeholder="Avatar URL" className="border p-2 w-full" />
+      <input value={profile.bio} onChange={e => setProfile({...profile, bio:e.target.value})} placeholder="Bio" className="border p-2 w-full" />
+      <input value={profile.interests.join(",")} onChange={e => setProfile({...profile, interests: e.target.value.split(",")})} placeholder="Interests (comma separated)" className="border p-2 w-full" />
+      <button onClick={handleSave} className="bg-green-600 text-white px-4 py-2 rounded">Save Profile</button>
+    </div>
+  );
+}
+
+export default ProfileForm;
