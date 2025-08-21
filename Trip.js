@@ -1,13 +1,25 @@
-// backend/models/Trip.js
-const mongoose = require('mongoose');
+import express from "express";
+import Trip from "../models/Trip.js";
+const router = express.Router();
 
-const tripSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  destination: { type: String, required: true },
-  startDate: { type: Date },
-  endDate: { type: Date },
-  notes: { type: String },
-  status: { type: String, enum: ['planned', 'ongoing', 'completed'], default: 'planned' }
+// Create trip
+router.post("/", async (req, res) => {
+  try {
+    const trip = await Trip.create(req.body);
+    res.json(trip);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-module.exports = mongoose.model('Trip', tripSchema);
+// Get trips by user
+router.get("/:userId", async (req, res) => {
+  try {
+    const trips = await Trip.find({ userId: req.params.userId });
+    res.json(trips);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+export default router;
