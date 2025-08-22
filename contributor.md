@@ -1,5 +1,0 @@
-# Contributors
-
-- **Full Name**: Samia Rahman Mridula  
-- **Student ID**: 22201942  
-- **G-Suite Email**: samia.rahman.mridula@g.bracu.ac.bd
