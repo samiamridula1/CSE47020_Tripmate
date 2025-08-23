@@ -1,0 +1,157 @@
+const User = require("../models/User");
+
+// @desc    Get user profile
+// @route   GET /api/users/:firebaseUid
+// @access  Public
+const getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findOne({
+            firebaseUid: req.params.firebaseUid,
+        });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// @desc    Create or update user profile
+// @route   POST /api/users/profile
+// @access  Public
+const saveUserProfile = async (req, res) => {
+    try {
+        const { firebaseUid, name, email, avatar, bio, interests } = req.body;
+
+        let user = await User.findOne({ firebaseUid });
+
+        if (user) {
+            user.name = name;
+            user.email = email;
+            user.avatar = avatar;
+            user.bio = bio;
+            user.interests = interests;
+            await user.save();
+        } else {
+            user = new User({
+                firebaseUid,
+                name,
+                email,
+                avatar,
+                bio,
+                interests,
+            });
+            await user.save();
+        }
+
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// @desc    Delete user
+// @route   DELETE /api/users/:id
+// @access  Public
+const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.json({ message: "User deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// @desc    Get all users
+// @route   GET /api/users
+// @access  Public
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select("-firebaseUid");
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// @desc    Demo login for testing
+// @route   POST /api/users/demo-login
+// @access  Public
+const demoLogin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Demo credentials
+        const demoAccounts = [
+            {
+                email: "demo@tripmate.com",
+                password: "demo123",
+                user: {
+                    firebaseUid: "demo-user-001",
+                    name: "Demo User",
+                    email: "demo@tripmate.com",
+                    avatar: "https://via.placeholder.com/150",
+                    bio: "This is a demo account for testing Tripmate features.",
+                    interests: [
+                        "Travel",
+                        "Adventure",
+                        "Photography",
+                        "Culture",
+                    ],
+                },
+            },
+            {
+                email: "john@tripmate.com",
+                password: "john123",
+                user: {
+                    firebaseUid: "demo-user-002",
+                    name: "John Explorer",
+                    email: "john@tripmate.com",
+                    avatar: "https://via.placeholder.com/150/0000FF/FFFFFF?text=JE",
+                    bio: "Travel enthusiast who loves exploring new cultures and cuisines.",
+                    interests: ["Hiking", "Food", "History", "Mountains"],
+                },
+            },
+        ];
+
+        // Find matching demo account
+        const demoAccount = demoAccounts.find(
+            (account) =>
+                account.email === email && account.password === password
+        );
+
+        if (!demoAccount) {
+            return res.status(401).json({
+                error: "Invalid demo credentials",
+                availableAccounts: demoAccounts.map((acc) => ({
+                    email: acc.email,
+                    password: acc.password,
+                    name: acc.user.name,
+                })),
+            });
+        }
+
+        res.json({
+            success: true,
+            user: demoAccount.user,
+            token: `demo-token-${demoAccount.user.firebaseUid}`,
+            message: "Demo login successful",
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = {
+    getUserProfile,
+    saveUserProfile,
+    deleteUser,
+    getAllUsers,
+    demoLogin,
+};
