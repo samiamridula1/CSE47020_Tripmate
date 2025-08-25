@@ -7,6 +7,11 @@
 - Backend: Express.js (Node.js)
 - Database: MongoDB
 
+## Run Project
+Go to corresponding directory and run the following commands in separately:
+- Frontend: npm run dev
+- Backend: npx nodemon server.js
+
 ## Features (Sprint 1)
 - User Profile Creation (Name, Avatar, Interests)
 - Edit Profile
