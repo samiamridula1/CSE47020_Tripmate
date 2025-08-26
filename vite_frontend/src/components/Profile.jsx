@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Logout from "./Logout";
-import LocalShops from "../components/LocalShops";
 
 export default function Profile() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -156,8 +155,6 @@ export default function Profile() {
           </div>
         </div>
       )}
-
-      <LocalShops location="Dhanmondi" />
 
       <Logout />
     </div>

@@ -33,7 +33,6 @@ app.use('/api/experiences', require('./routes/experienceRoutes'));
 app.use('/api/expenses', require('./routes/expenseRoutes'));
 app.use('/api/suggestions', require('./routes/suggestions'));
 app.use('/api/hotels', require('./routes/hotelRoutes'));
-app.use('/api/shops', require('./routes/shopRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
 app.use('/api/transport', require('./routes/transportRoutes'));
 app.use('/api/hotel-bookings', require('./routes/hotelBookings'));
