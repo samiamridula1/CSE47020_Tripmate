@@ -8,7 +8,7 @@ export default function Profile() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
 
-  // 🔍 Fetch suggestions on mount
+  // Fetch suggestions on mount
   useEffect(() => {
     const fetchSuggestions = async () => {
       try {
@@ -23,7 +23,7 @@ export default function Profile() {
     fetchSuggestions();
   }, []);
 
-  // 🧠 Handle gender filter
+  // Handle gender filter
   const handleGenderChange = async (e) => {
     const selected = e.target.value;
     setGender(selected);

@@ -14,12 +14,12 @@ export default function MyTrips({ user }) {
 
   const fetchTrips = async (userId) => {
     try {
-      console.log("🔗 Fetching trips for:", userId);
+      console.log("Fetching trips for:", userId);
       const data = await getTrips(userId);
-      console.log("📦 Trips fetched:", data);
+      console.log("Trips fetched:", data);
       setTrips(data);
     } catch (error) {
-      console.error("❌ Error fetching trips:", error);
+      console.error("Error fetching trips:", error);
     } finally {
       setLoading(false);
     }
@@ -30,7 +30,7 @@ export default function MyTrips({ user }) {
       await deleteTrip(id);
       fetchTrips();
     } catch (error) {
-      console.error("❌ Error deleting trip:", error);
+      console.error("Error deleting trip:", error);
     }
   };
 

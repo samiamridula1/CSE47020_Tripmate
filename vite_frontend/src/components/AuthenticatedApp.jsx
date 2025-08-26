@@ -6,7 +6,7 @@ import MyTrips from "./components/MyTrips";
 import Layout from "../components/common/Layout"; // adjust path if needed
 
 export default function AuthenticatedApp({ user, handleLogout }) {
-  console.log("✅ AuthenticatedApp loaded");
+  console.log("AuthenticatedApp loaded");
 
   return (
     <Layout userName={user?.email} onLogout={handleLogout}>

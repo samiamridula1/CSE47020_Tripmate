@@ -212,14 +212,14 @@ export default function TransportBooking({ user }) {
         {transports.map((t) => (
           <div key={t._id} className="border p-4 rounded shadow">
             <p className={`${typeColor[t.type]} font-semibold`}>
-              🚗 Type: {t.type}
+              Type: {t.type}
             </p>
-            <p>✈️ Provider: {t.provider}</p>
-            <p>📍 From: {t.departureLocation} → {t.arrivalLocation}</p>
-            <p>📅 Date: {t.date?.slice(0, 10)}</p>
-            <p>🔖 Booking Code: {t.bookingCode || "N/A"}</p>
+            <p>Provider: {t.provider}</p>
+            <p>From: {t.departureLocation} → {t.arrivalLocation}</p>
+            <p>Date: {t.date?.slice(0, 10)}</p>
+            <p>Booking Code: {t.bookingCode || "N/A"}</p>
             <p>
-              🧳 Trip:{" "}
+              Trip:{" "}
               {trips.find((trip) => trip._id === t.tripId)?.name || "Unlinked"}
             </p>
             <div className="mt-2 flex gap-4">
