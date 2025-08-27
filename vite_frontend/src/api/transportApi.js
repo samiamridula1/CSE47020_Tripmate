@@ -1,5 +1,16 @@
 import api from "./axios";
 
+// Search for available transport options
+export const searchTransport = async (searchData) => {
+  try {
+    const response = await api.post("/transport/search", searchData);
+    return response.data;
+  } catch (error) {
+    console.error("Error searching transport:", error);
+    throw error;
+  }
+};
+
 export const fetchAllBookings = async () => {
   try {
     const response = await api.get("/transport");

@@ -35,6 +35,7 @@ app.use('/api/suggestions', require('./routes/suggestions'));
 app.use('/api/hotels', require('./routes/hotelRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
 app.use('/api/transport', require('./routes/transportRoutes'));
+app.use('/api/locations', require('./routes/locationRoutes'));
 app.use('/api/hotel-bookings', require('./routes/hotelBookings'));
 app.use('/api/checklists', require('./routes/checklistRoutes'));
 

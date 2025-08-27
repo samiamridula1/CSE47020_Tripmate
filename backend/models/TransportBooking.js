@@ -7,7 +7,7 @@ const transportBookingSchema = new mongoose.Schema({
     required: true
   },
 
-  travelerName: {
+  provider: {
     type: String,
     required: true,
     trim: true
@@ -15,8 +15,6 @@ const transportBookingSchema = new mongoose.Schema({
 
   bookingCode: {
     type: String,
-    required: true,
-    unique: true,
     trim: true
   },
 
@@ -25,6 +23,7 @@ const transportBookingSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  
   arrivalLocation: {
     type: String,
     required: true,
@@ -35,6 +34,43 @@ const transportBookingSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  
+  departureTime: {
+    type: String,
+    required: true
+  },
+  
+  arrivalTime: {
+    type: String,
+    required: true
+  },
+  
+  price: {
+    type: Number,
+    required: true
+  },
+  
+  currency: {
+    type: String,
+    default: "USD"
+  },
+  
+  seats: {
+    type: Number,
+    default: 1,
+    min: 1
+  },
+  
+  status: {
+    type: String,
+    enum: ["confirmed", "cancelled", "pending"],
+    default: "confirmed"
+  },
+  
+  transportProviderId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "TransportProvider"
+  },
 
   tripId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -42,13 +78,7 @@ const transportBookingSchema = new mongoose.Schema({
     required: true
   },
 
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
-  },
-
-  userId: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
