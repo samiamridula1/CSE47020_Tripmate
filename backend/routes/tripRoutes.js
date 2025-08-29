@@ -2,6 +2,17 @@ const express = require('express');
 const router = express.Router();
 const Trip = require('../models/Trip');
 
+// Get all trips (for activity feed)
+router.get('/', async (req, res) => {
+  try {
+    const trips = await Trip.find().sort({ createdAt: -1 });
+    res.json(trips);
+  } catch (error) {
+    console.error('Error fetching all trips:', error);
+    res.status(500).json({ message: 'Error fetching trips', error: error.message });
+  }
+});
+
 // Get trips by user
 router.get('/:userId', async (req, res) => {
   try {

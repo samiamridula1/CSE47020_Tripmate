@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./PeopleSuggestions.css";
 import { fetchSuggestions } from "../api/authApi";
+import { useNotification } from "./Notification";
 
 const PeopleSuggestions = () => {
+  const { showInfo } = useNotification();
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -48,7 +50,7 @@ const PeopleSuggestions = () => {
   const handleCreateGroup = (person) => {
     // TODO: Implement group creation functionality
     console.log("Creating group with:", person.name);
-    alert(`Group creation with ${person.name} - Feature coming soon!`);
+    showInfo(`Group creation with ${person.name} - Feature coming soon!`);
   };
 
   if (loading) {

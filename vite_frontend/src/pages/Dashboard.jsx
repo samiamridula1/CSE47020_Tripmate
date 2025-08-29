@@ -11,9 +11,11 @@ import PeopleSuggestions from "../components/PeopleSuggestions";
 import ShareExperienceModal from "../components/ShareExperienceModal";
 import PackingChecklist from "../components/PackingChecklist";
 import ExperienceGrid from "../components/ExperienceGrid";
-import RecentActivity from "../components/RecentActivity";
+import { useNotification } from "../components/Notification";
+
 
 export default function Dashboard({ user }) {
+  const { showSuccess, showError } = useNotification();
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const currentUser = user || storedUser;
 
@@ -81,9 +83,10 @@ export default function Dashboard({ user }) {
       await createTrip({ ...form, userId });
       setForm({ destination: "", date: "", details: "" });
       fetchTrips();
+      showSuccess("Trip created successfully!");
     } catch (err) {
       console.error("Failed to create trip:", err);
-      alert("Failed to create trip. Please try again.");
+      showError("Failed to create trip. Please try again.");
     }
   };
 
@@ -91,9 +94,10 @@ export default function Dashboard({ user }) {
     try {
       await deleteTrip(id);
       fetchTrips();
+      showSuccess("Trip deleted successfully!");
     } catch (err) {
       console.error("Failed to delete trip:", err);
-      alert("Failed to delete trip. Please try again.");
+      showError("Failed to delete trip. Please try again.");
     }
   };
 
@@ -102,9 +106,10 @@ export default function Dashboard({ user }) {
       const userId = currentUser._id || currentUser.id;
       await deleteExperience(experienceId, userId);
       fetchExperiences(); // Refresh experiences after deletion
+      showSuccess("Experience deleted successfully!");
     } catch (err) {
       console.error("Failed to delete experience:", err);
-      alert("Failed to delete experience. Please try again.");
+      showError("Failed to delete experience. Please try again.");
     }
   };
 
@@ -291,8 +296,6 @@ export default function Dashboard({ user }) {
       <TripSuggestions />
 
       <PeopleSuggestions />
-
-      <RecentActivity currentUserId={currentUser._id || currentUser.id} />
     </div>
   );
 }

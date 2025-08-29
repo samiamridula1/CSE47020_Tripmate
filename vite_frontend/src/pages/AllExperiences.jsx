@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getAllExperiences, deleteExperience } from "../api/experienceApi.js";
+import { getAllExperiences, deleteExperience } from "../api/experienceApi";
+import { useNotification } from "../components/Notification";
 import SearchBar from "../components/SearchBar";
 import ExperienceGrid from "../components/ExperienceGrid";
 
 export default function AllExperiences() {
+  const { showSuccess, showError } = useNotification();
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all"); // "all", "mine", "others"
@@ -35,9 +37,10 @@ export default function AllExperiences() {
       const userId = currentUser._id || currentUser.id;
       await deleteExperience(experienceId, userId);
       fetchExperiences();
+      showSuccess("Experience deleted successfully!");
     } catch (err) {
       console.error("Failed to delete experience:", err);
-      alert("Failed to delete experience. Please try again.");
+      showError("Failed to delete experience. Please try again.");
     }
   };
 

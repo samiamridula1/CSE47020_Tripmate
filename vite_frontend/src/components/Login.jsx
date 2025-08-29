@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "./Notification";
 
 export default function Login({ setUser }) {
+  const { showError } = useNotification();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ export default function Login({ setUser }) {
       navigate("/dashboard");
     } catch (err) {
       console.error("Login failed:", err.response?.data || err.message);
-      alert(
+      showError(
         err.response?.data?.error ||
         err.response?.data?.message ||
           "Login failed. Please check your credentials."

@@ -55,6 +55,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Filter users by gender
+router.get("/filter", async (req, res) => {
+  try {
+    const { gender } = req.query;
+    
+    if (!gender) {
+      return res.status(400).json({ error: "Gender parameter is required." });
+    }
+    
+    const users = await User.find({ gender: gender }).select("-password");
+    res.status(200).json(users);
+  } catch (err) {
+    console.error("Filter users error:", err);
+    res.status(500).json({ error: "Failed to filter users." });
+  }
+});
+
 // Get user by ID
 router.get("/:userId", async (req, res) => {
   try {

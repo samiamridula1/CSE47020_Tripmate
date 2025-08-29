@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
+import { useNotification } from "./Notification";
 
 const Register = ({ setUser }) => {
+  const { showSuccess, showError } = useNotification();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -26,11 +28,11 @@ const Register = ({ setUser }) => {
       const userData = { ...res.data, isAuthenticated: true };
       localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
-      alert("Registered successfully");
+      showSuccess("Registered successfully");
       navigate("/dashboard");
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.error || "Registration failed";
-      alert(`${msg}`);
+      showError(`${msg}`);
       console.error("Registration error:", err);
     }
   };

@@ -5,6 +5,8 @@ const tripSchema = new mongoose.Schema({
   destination: String,
   date: Date,
   details: String
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('Trip', tripSchema);

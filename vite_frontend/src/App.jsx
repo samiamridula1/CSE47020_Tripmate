@@ -12,6 +12,7 @@ import Login from "./components/Login";
 import MyTrips from "./components/MyTrips";
 import Profile from "./components/Profile";
 import TransportBooking from "./components/TransportBooking";
+import { NotificationContainer } from "./components/Notification";
 
 import Register from "./pages/Register";
 import Budget from "./pages/Budget";
@@ -22,6 +23,7 @@ import TripSuggestionsPage from "./pages/TripSuggestionsPage";
 import AllExperiences from "./pages/AllExperiences";
 import MyExperiences from "./pages/MyExperiences";
 import ExperienceDetail from "./pages/ExperienceDetail";
+import People from "./pages/People";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -143,6 +145,14 @@ function App() {
               }
             />
             <Route
+              path="/people"
+              element={
+                <Layout userName={user.name} onLogout={handleLogout}>
+                  <People />
+                </Layout>
+              }
+            />
+            <Route
               path="/experience/:id"
               element={
                 <Layout userName={user.name} onLogout={handleLogout}>
@@ -158,7 +168,12 @@ function App() {
     )
   );
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <NotificationContainer />
+    </>
+  );
 }
 
 export default App;

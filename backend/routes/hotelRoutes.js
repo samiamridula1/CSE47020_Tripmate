@@ -25,6 +25,17 @@ router.post('/bookings', async (req, res) => {
   }
 });
 
+// GET: Get all hotel bookings (for activity feed)
+router.get('/bookings', async (req, res) => {
+  try {
+    const hotels = await Hotel.find().sort({ createdAt: -1 });
+    res.status(200).json(hotels);
+  } catch (err) {
+    console.error('Error fetching all hotel bookings:', err);
+    res.status(500).json({ error: "Failed to fetch hotel bookings" });
+  }
+});
+
 // GET: Get hotel bookings for a user
 router.get('/bookings/:userId', async (req, res) => {
   try {

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNotification } from "../Notification";
 // import axios from "axios";
 
 function TripForm({ userId, onTripAdded }) {
+    const { showSuccess, showError } = useNotification();
     const [destination, setDestination] = useState("");
     const [date, setDate] = useState("");
     const [details, setDetails] = useState("");
@@ -15,10 +17,10 @@ function TripForm({ userId, onTripAdded }) {
             setDate("");
             setDetails("");
             onTripAdded(); // trigger refresh
-            alert("Trip added successfully! (Demo mode)");
+            showSuccess("Trip added successfully! (Demo mode)");
         } catch (err) {
             console.error(err);
-            alert("Failed to add trip.");
+            showError("Failed to add trip.");
         }
     };
     return (

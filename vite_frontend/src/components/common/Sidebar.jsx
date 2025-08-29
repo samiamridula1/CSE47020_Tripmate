@@ -9,6 +9,7 @@ function Sidebar() {
         <Link to="/dashboard" className="block hover:text-green-400">🏠 Dashboard</Link>
         <Link to="/trips" className="block hover:text-green-400">✈️ My Trips</Link>
         <Link to="/my-experiences" className="block hover:text-green-400">🎢 My Experiences</Link>
+        <Link to="/people" className="block hover:text-green-400">👥 People</Link>
         <Link to="/profile" className="block hover:text-green-400">👤 Profile</Link>
       </nav>
     </div>

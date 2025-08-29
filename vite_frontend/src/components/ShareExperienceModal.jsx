@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { createExperience } from "../api/experienceApi";
+import { useNotification } from "./Notification";
 
 const ShareExperienceModal = ({ userId, onClose, onUploadSuccess }) => {
+  const { showSuccess, showError } = useNotification();
   const [story, setStory] = useState("");
   const [location, setLocation] = useState("");
   const [imageFile, setImageFile] = useState(null);
@@ -28,7 +30,7 @@ const ShareExperienceModal = ({ userId, onClose, onUploadSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!story || !location || !imageFile) {
-      alert("Please fill in all fields and select an image.");
+      showError("Please fill in all fields and select an image.");
       return;
     }
 
@@ -53,9 +55,10 @@ const ShareExperienceModal = ({ userId, onClose, onUploadSuccess }) => {
       // Refresh dashboard and close modal
       onUploadSuccess();
       onClose();
+      showSuccess("Experience shared successfully!");
     } catch (err) {
       console.error("Upload failed:", err);
-      alert("Something went wrong while uploading. Please try again.");
+      showError("Something went wrong while uploading. Please try again.");
     } finally {
       setLoading(false);
     }
