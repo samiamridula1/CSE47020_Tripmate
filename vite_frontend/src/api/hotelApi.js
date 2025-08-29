@@ -11,25 +11,24 @@ export const searchHotels = async (searchData) => {
   }
 };
 
-// Fetch all hotels
-export const fetchHotels = () => axios.get('/hotels');
-
 // Book a hotel
-export const bookHotel = (bookingData) => axios.post('/hotel-bookings', bookingData);
-
-// Get user's hotel bookings
-export const getUserBookings = (userId) => axios.get(`/hotel-bookings/user/${userId}`);
-
-// Get booking details
-export const getBookingDetails = (bookingId) => axios.get(`/hotel-bookings/${bookingId}`);
-
-// Update hotel booking
-export const updateHotelBooking = async (bookingId, bookingData) => {
+export const bookHotel = async (bookingData) => {
   try {
-    const response = await axios.put(`/hotel-bookings/${bookingId}`, bookingData);
+    const response = await axios.post('/hotel-bookings', bookingData);
     return response.data;
   } catch (error) {
-    console.error("Error updating hotel booking:", error);
+    console.error("Error booking hotel:", error);
+    throw error;
+  }
+};
+
+// Get user's hotel bookings
+export const getUserBookings = async (userId) => {
+  try {
+    const response = await axios.get(`/hotel-bookings/user/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting user bookings:", error);
     throw error;
   }
 };
@@ -41,17 +40,6 @@ export const cancelHotelBooking = async (bookingId) => {
     return response.data;
   } catch (error) {
     console.error("Error cancelling hotel booking:", error);
-    throw error;
-  }
-};
-
-// Get hotel providers
-export const fetchHotelProviders = async () => {
-  try {
-    const response = await axios.get("/hotel-bookings/providers");
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching hotel providers:", error);
     throw error;
   }
 };

@@ -6,7 +6,6 @@ import {
   deleteTrip,
 } from "../api/tripApi.js";
 import { getAllExperiences, deleteExperience } from "../api/experienceApi.js";
-import { fetchHotels } from "../api/hotelApi.js";
 import TripSuggestions from "../components/TripSuggestions.jsx";
 import PeopleSuggestions from "../components/PeopleSuggestions";
 import ShareExperienceModal from "../components/ShareExperienceModal";
@@ -33,7 +32,6 @@ export default function Dashboard({ user }) {
 
   const [trips, setTrips] = useState([]);
   const [experiences, setExperiences] = useState([]);
-  const [hotels, setHotels] = useState([]);
   const [form, setForm] = useState({
     destination: "",
     date: "",
@@ -44,7 +42,6 @@ export default function Dashboard({ user }) {
   useEffect(() => {
     fetchTrips();
     fetchExperiences();
-    fetchHotelData();
   }, [currentUser]);
 
   const fetchTrips = async () => {
@@ -66,16 +63,6 @@ export default function Dashboard({ user }) {
     } catch (err) {
       console.error("Failed to fetch experiences:", err);
       setExperiences([]);
-    }
-  };
-
-  const fetchHotelData = async () => {
-    try {
-      const response = await fetchHotels();
-      setHotels(response.data || []);
-    } catch (err) {
-      console.error("Failed to fetch hotels:", err);
-      setHotels([]);
     }
   };
 

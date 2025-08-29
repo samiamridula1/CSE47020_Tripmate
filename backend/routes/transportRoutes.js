@@ -60,7 +60,11 @@ router.post("/", async (req, res) => {
       }
       
       // Update booking data with provider details
+      bookingData.type = provider.type;
       bookingData.provider = provider.provider;
+      bookingData.departureLocation = provider.departureLocation;
+      bookingData.arrivalLocation = provider.arrivalLocation;
+      bookingData.date = bookingData.date || new Date(); // Use provided date or current date
       bookingData.departureTime = provider.departureTime;
       bookingData.arrivalTime = provider.arrivalTime;
       bookingData.price = provider.price * seats;
