@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { getAllExperiences, deleteExperience } from "../api/experienceApi.js";
 import EditExperienceModal from "../components/EditExperienceModal";
+import Comments from "../components/Comments";
 
 export default function ExperienceDetail() {
   const [editing, setEditing] = useState(false);
@@ -176,6 +177,23 @@ export default function ExperienceDetail() {
           <div className="prose prose-lg max-w-none">
             <div className="text-gray-800 leading-relaxed whitespace-pre-wrap text-lg">
               {experience.story}
+            </div>
+          </div>
+
+          {/* Comments Section */}
+          <Comments 
+            experienceId={experience._id} 
+            currentUserId={currentUserId} 
+          />
+
+          {/* Actions */}
+          <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end">
+            <div className="text-sm text-gray-500">
+              Added {new Date(experience.createdAt).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
             </div>
           </div>
 

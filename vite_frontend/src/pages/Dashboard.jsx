@@ -11,6 +11,7 @@ import PeopleSuggestions from "../components/PeopleSuggestions";
 import ShareExperienceModal from "../components/ShareExperienceModal";
 import PackingChecklist from "../components/PackingChecklist";
 import ExperienceGrid from "../components/ExperienceGrid";
+import RecentActivity from "../components/RecentActivity";
 
 export default function Dashboard({ user }) {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -130,9 +131,31 @@ export default function Dashboard({ user }) {
           Welcome, {currentUser?.name || "Traveler"}!
         </h1>
         <p><strong>Email:</strong> {currentUser?.email}</p>
-        <p><strong>Total Trips:</strong> {trips.length}</p>
+        
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+          <div className="bg-white p-3 rounded shadow text-center">
+            <div className="text-2xl font-bold text-blue-600">{trips.length}</div>
+            <div className="text-sm text-gray-600">Total Trips</div>
+          </div>
+          <div className="bg-white p-3 rounded shadow text-center">
+            <div className="text-2xl font-bold text-orange-600">
+              {trips.filter(trip => new Date(trip.date) > new Date()).length}
+            </div>
+            <div className="text-sm text-gray-600">Upcoming Trips</div>
+          </div>
+          <div className="bg-white p-3 rounded shadow text-center">
+            <div className="text-2xl font-bold text-green-600">{myExperiences.length}</div>
+            <div className="text-sm text-gray-600">My Experiences</div>
+          </div>
+          <div className="bg-white p-3 rounded shadow text-center">
+            <div className="text-2xl font-bold text-purple-600">{allExperiences.length}</div>
+            <div className="text-sm text-gray-600">Recent Posts</div>
+          </div>
+        </div>
+        
         {sortedTrips.length > 0 && (
-          <p>
+          <p className="mt-3">
             <strong>Next Trip Plan:</strong> {sortedTrips[0].destination} on{" "}
             {new Date(sortedTrips[0].date).toLocaleDateString()}
           </p>
@@ -268,6 +291,8 @@ export default function Dashboard({ user }) {
       <TripSuggestions />
 
       <PeopleSuggestions />
+
+      <RecentActivity currentUserId={currentUser._id || currentUser.id} />
     </div>
   );
 }

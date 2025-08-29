@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import CommentCount from "./CommentCount";
 
 export default function ExperienceGrid({ title, experiences, currentUserId, onDelete, showDelete, showOwner, emptyText, actions, gridCols = "md:grid-cols-2 lg:grid-cols-3" }) {
   return (
@@ -48,10 +49,13 @@ export default function ExperienceGrid({ title, experiences, currentUserId, onDe
                       {exp.story?.substring(0, 120) || ''}...
                     </p>
                   </Link>
-                  <div className="mt-4 flex items-center justify-between">
-                    <p className="text-sm text-gray-500">
-                      {new Date(exp.createdAt).toLocaleDateString()}
-                    </p>
+                  <div className="mt-4 flex gap-3 items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <p className="text-sm text-gray-500">
+                        {new Date(exp.createdAt).toLocaleDateString()}
+                      </p>
+                      <CommentCount experienceId={exp._id} />
+                    </div>
                     <Link
                       to={`/experience/${exp._id}`}
                       className="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors"

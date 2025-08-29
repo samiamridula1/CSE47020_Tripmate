@@ -38,6 +38,7 @@ app.use('/api/transport', require('./routes/transportRoutes'));
 app.use('/api/locations', require('./routes/locationRoutes'));
 app.use('/api/hotel-bookings', require('./routes/hotelBookings'));
 app.use('/api/checklists', require('./routes/checklistRoutes'));
+app.use('/api/comments', require('./routes/commentRoutes'));
 
 // Serve React Frontend
 const frontendPath = path.join(__dirname, 'frontend', 'build');
