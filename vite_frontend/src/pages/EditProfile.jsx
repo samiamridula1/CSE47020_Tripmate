@@ -15,6 +15,7 @@ export default function EditProfile() {
     bio: "",
     gender: ""
   });
+  const [avatarFile, setAvatarFile] = useState(null);
 
   useEffect(() => {
     // Get user from localStorage
@@ -35,26 +36,37 @@ export default function EditProfile() {
     });
   }, [navigate]);
 
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleAvatarChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setAvatarFile(e.target.files[0]);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
-      const updateData = {
-        ...form,
-        interests: form.interests.split(",").map(interest => interest.trim()).filter(interest => interest)
-      };
+      const formData = new FormData();
+      formData.append('name', form.name);
+      formData.append('email', form.email);
+      formData.append('interests', form.interests);
+      formData.append('bio', form.bio);
+      formData.append('gender', form.gender);
+      if (avatarFile) {
+        formData.append('avatar', avatarFile);
+      } else {
+        formData.append('avatarUrl', form.avatar);
+      }
 
       const response = await fetch(`http://localhost:5000/api/users/${user.id || user._id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updateData)
+        body: formData
       });
 
       if (response.ok) {
@@ -114,13 +126,20 @@ export default function EditProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Avatar URL</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Avatar Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            />
+            <div className="mt-2 text-xs text-gray-500">Or paste an image URL below:</div>
             <input
               name="avatar"
               value={form.avatar}
               onChange={handleChange}
               placeholder="Avatar Image URL"
-              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500 mt-1"
             />
           </div>
 
