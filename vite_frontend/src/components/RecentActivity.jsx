@@ -6,6 +6,7 @@ import { getAllExperiences } from '../api/experienceApi';
 export default function RecentActivity({ currentUserId }) {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     if (currentUserId) {
@@ -396,7 +397,7 @@ export default function RecentActivity({ currentUserId }) {
         </div>
       ) : (
         <div className="space-y-3">
-          {activities.map((activity, index) => (
+          {(showAll ? activities : activities.slice(0, 5)).map((activity, index) => (
             <div key={index} className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg">
               {getActivityIcon(activity.type)}
               <div className="flex-1 min-w-0">
@@ -423,6 +424,14 @@ export default function RecentActivity({ currentUserId }) {
               </div>
             </div>
           ))}
+          {activities.length > 5 && (
+            <button
+              className="mt-2 text-blue-600 hover:text-blue-700 text-sm"
+              onClick={() => setShowAll(!showAll)}
+            >
+              {showAll ? 'Show Less' : 'Show More'}
+            </button>
+          )}
         </div>
       )}
     </div>
