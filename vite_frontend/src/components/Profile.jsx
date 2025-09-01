@@ -31,17 +31,29 @@ export default function Profile() {
         <div className="bg-white p-8 rounded-lg shadow">
           <div className="text-center space-y-4">
             <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto flex items-center justify-center overflow-hidden">
-              {user.avatar || user.avatarUrl ? (
-                <img
-                  src={user.avatar || user.avatarUrl}
-                  alt="User Avatar"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-2xl text-gray-600 font-semibold">
-                  {user.name ? user.name.charAt(0).toUpperCase() : '?'}
-                </span>
-              )}
+              {(user.avatar && user.avatar.startsWith('data:image')) ? (
+                  <img
+                    src={user.avatar}
+                    alt="User Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                ) : user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt="User Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                ) : user.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt="User Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-2xl text-gray-600 font-semibold">
+                    {user.name ? user.name.charAt(0).toUpperCase() : '?'}
+                  </span>
+                )}
             </div>
             
             <h1 className="text-3xl font-bold text-gray-900">
@@ -56,16 +68,16 @@ export default function Profile() {
               </p>
             )}
             
-            {user.interests && user.interests.length > 0 && (
+              {user.interests && (
               <div className="flex flex-wrap justify-center gap-2 mt-4">
-                {user.interests.map((interest, index) => (
-                  <span
-                    key={index}
-                    className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full"
-                  >
-                    {interest}
-                  </span>
-                ))}
+                  {(Array.isArray(user.interests) ? user.interests : String(user.interests).split(',').map(i => i.trim())).filter(Boolean).map((interest, index) => (
+                    <span
+                      key={index}
+                      className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full"
+                    >
+                      {interest}
+                    </span>
+                  ))}
               </div>
             )}
             

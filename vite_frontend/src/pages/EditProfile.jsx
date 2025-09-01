@@ -52,21 +52,32 @@ export default function EditProfile() {
     setLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('name', form.name);
-      formData.append('email', form.email);
-      formData.append('interests', form.interests);
-      formData.append('bio', form.bio);
-      formData.append('gender', form.gender);
+      let avatarBase64 = form.avatar;
       if (avatarFile) {
-        formData.append('avatar', avatarFile);
-      } else {
-        formData.append('avatarUrl', form.avatar);
+        // Convert file to base64
+        avatarBase64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(avatarFile);
+        });
       }
+
+      const updateData = {
+        name: form.name,
+        email: form.email,
+        interests: form.interests,
+        bio: form.bio,
+        gender: form.gender,
+        avatarUrl: avatarBase64
+      };
 
       const response = await fetch(`http://localhost:5000/api/users/${user.id || user._id}`, {
         method: 'PUT',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updateData)
       });
 
       if (response.ok) {
