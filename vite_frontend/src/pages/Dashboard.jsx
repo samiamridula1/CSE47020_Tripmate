@@ -4,6 +4,9 @@ import {
   getTrips,
   createTrip,
   deleteTrip,
+  updateTripStatus,
+  addTripPhoto,
+  removeTripPhoto,
 } from "../api/tripApi.js";
 import { getAllExperiences, deleteExperience } from "../api/experienceApi.js";
 import TripSuggestions from "../components/TripSuggestions.jsx";
@@ -11,6 +14,10 @@ import PeopleSuggestions from "../components/PeopleSuggestions";
 import ShareExperienceModal from "../components/ShareExperienceModal";
 import PackingChecklist from "../components/PackingChecklist";
 import ExperienceGrid from "../components/ExperienceGrid";
+import TripPhotoGallery from "../components/TripPhotoGallery";
+import { TripStatusBadge, TripStatusFilter, TripStatusStats } from "../components/TripStatus";
+import { TripDuration, DateRangeInput } from "../components/TripDuration";
+import TripTemplates from "../components/TripTemplates";
 import { useNotification } from "../components/Notification";
 
 
@@ -38,9 +45,14 @@ export default function Dashboard({ user }) {
   const [form, setForm] = useState({
     destination: "",
     date: "",
+    startDate: "",
+    endDate: "",
     details: "",
+    notes: "",
   });
   const [showModal, setShowModal] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [expandedTrip, setExpandedTrip] = useState(null);
 
   useEffect(() => {
     fetchTrips();
@@ -76,12 +88,40 @@ export default function Dashboard({ user }) {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  const handleTemplateSelect = (template) => {
+    const today = new Date();
+    const startDate = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000); // 1 week from now
+    const endDate = new Date(startDate.getTime() + (template.suggestedDuration - 1) * 24 * 60 * 60 * 1000);
+
+    setForm({
+      ...form,
+      details: template.defaultDetails,
+      notes: template.defaultNotes,
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0],
+      date: startDate.toISOString().split('T')[0]
+    });
+  };
+
   const handleAddTrip = async (e) => {
     e.preventDefault();
     try {
       const userId = currentUser._id || currentUser.id;
-      await createTrip({ ...form, userId });
-      setForm({ destination: "", date: "", details: "" });
+      // Use startDate as main date if provided, otherwise use date field
+      const tripData = {
+        ...form,
+        userId,
+        date: form.startDate || form.date, // Backward compatibility
+      };
+      await createTrip(tripData);
+      setForm({ 
+        destination: "", 
+        date: "", 
+        startDate: "", 
+        endDate: "", 
+        details: "", 
+        notes: "" 
+      });
       fetchTrips();
       showSuccess("Trip created successfully!");
     } catch (err) {
@@ -101,6 +141,39 @@ export default function Dashboard({ user }) {
     }
   };
 
+  const handleStatusChange = async (tripId, newStatus) => {
+    try {
+      await updateTripStatus(tripId, newStatus);
+      fetchTrips();
+      showSuccess(`Trip status updated to ${newStatus}!`);
+    } catch (err) {
+      console.error("Failed to update trip status:", err);
+      showError("Failed to update trip status. Please try again.");
+    }
+  };
+
+  const handleAddPhoto = async (tripId, photoData) => {
+    try {
+      await addTripPhoto(tripId, photoData);
+      fetchTrips();
+      showSuccess("Photo added successfully!");
+    } catch (err) {
+      console.error("Failed to add photo:", err);
+      showError("Failed to add photo. Please try again.");
+    }
+  };
+
+  const handleRemovePhoto = async (tripId, photoIndex) => {
+    try {
+      await removeTripPhoto(tripId, photoIndex);
+      fetchTrips();
+      showSuccess("Photo removed successfully!");
+    } catch (err) {
+      console.error("Failed to remove photo:", err);
+      showError("Failed to remove photo. Please try again.");
+    }
+  };
+
   const handleDeleteExperience = async (experienceId) => {
     try {
       const userId = currentUser._id || currentUser.id;
@@ -116,6 +189,11 @@ export default function Dashboard({ user }) {
   const sortedTrips = [...trips].sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
+
+  // Filter trips based on status
+  const filteredTrips = statusFilter === 'all' 
+    ? sortedTrips 
+    : sortedTrips.filter(trip => (trip.status || 'planned') === statusFilter);
 
   // Sort experiences by createdAt descending (newest first)
   const sortedExperiences = [...experiences].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -183,6 +261,12 @@ export default function Dashboard({ user }) {
         className="bg-white p-6 shadow rounded space-y-4"
       >
         <h2 className="text-xl font-semibold text-gray-800">Add a New Trip</h2>
+        
+        {/* Trip Templates */}
+        <div>
+          <TripTemplates onSelectTemplate={handleTemplateSelect} />
+        </div>
+
         <input
           name="destination"
           placeholder="Destination"
@@ -191,20 +275,31 @@ export default function Dashboard({ user }) {
           className="border p-2 w-full rounded"
           required
         />
-        <input
-          name="date"
-          type="date"
-          value={form.date}
-          onChange={handleChange}
-          className="border p-2 w-full rounded"
-          required
-        />
+        
+        <div>
+          <h3 className="text-sm font-medium text-gray-700 mb-2">Trip Dates</h3>
+          <DateRangeInput
+            startDate={form.startDate}
+            endDate={form.endDate}
+            onStartDateChange={(date) => setForm({...form, startDate: date, date: date})}
+            onEndDateChange={(date) => setForm({...form, endDate: date})}
+          />
+        </div>
+
         <textarea
           name="details"
           placeholder="Details"
           value={form.details}
           onChange={handleChange}
           className="border p-2 w-full rounded"
+        />
+        <textarea
+          name="notes"
+          placeholder="Personal notes, tips, or reminders (optional)"
+          value={form.notes}
+          onChange={handleChange}
+          className="border p-2 w-full rounded"
+          rows="2"
         />
         <button
           type="submit"
@@ -215,30 +310,93 @@ export default function Dashboard({ user }) {
       </form>
 
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800">Your Trips</h2>
-        {sortedTrips.length === 0 ? (
-          <p className="text-gray-500">No trips yet. Start planning!</p>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-gray-800">Your Trips</h2>
+          <div className="text-sm text-gray-500">
+            {filteredTrips.length} of {trips.length} trips
+          </div>
+        </div>
+        
+        {/* Status Filter */}
+        <TripStatusFilter 
+          currentFilter={statusFilter} 
+          onFilterChange={setStatusFilter} 
+        />
+        
+        {/* Trip Stats */}
+        {trips.length > 0 && (
+          <TripStatusStats trips={trips} />
+        )}
+        
+        {filteredTrips.length === 0 ? (
+          <p className="text-gray-500">
+            {statusFilter === 'all' ? 'No trips yet. Start planning!' : `No ${statusFilter} trips found.`}
+          </p>
         ) : (
-          sortedTrips.map((trip) => (
+          filteredTrips.map((trip) => (
             <div
               key={trip._id}
-              className="border p-4 rounded shadow flex justify-between items-start"
+              className="border p-4 rounded shadow space-y-3"
             >
-              <div>
-                <h3 className="text-lg font-bold text-blue-700">
-                  {trip.destination}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  {new Date(trip.date).toLocaleDateString()}
-                </p>
-                <p className="text-gray-700">{trip.details}</p>
+              <div className="flex justify-between items-start">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <h3 className="text-lg font-bold text-blue-700">
+                      {trip.destination}
+                    </h3>
+                    <TripStatusBadge 
+                      status={trip.status || 'planned'} 
+                      onStatusChange={handleStatusChange}
+                      tripId={trip._id}
+                    />
+                  </div>
+                  
+                  {/* Trip Duration */}
+                  <div className="mb-2">
+                    <TripDuration 
+                      startDate={trip.startDate} 
+                      endDate={trip.endDate} 
+                      date={trip.date}
+                      compact={true}
+                    />
+                  </div>
+                  
+                  <p className="text-gray-700">{trip.details}</p>
+                  {trip.notes && (
+                    <div className="mt-2 p-2 bg-yellow-50 rounded border-l-4 border-yellow-400">
+                      <p className="text-sm text-gray-700">
+                        <span className="font-medium">Notes:</span> {trip.notes}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => setExpandedTrip(expandedTrip === trip._id ? null : trip._id)}
+                    className="text-blue-600 hover:underline text-sm"
+                  >
+                    {expandedTrip === trip._id ? 'Hide Photos' : 'Show Photos'}
+                  </button>
+                  <button
+                    onClick={() => handleDelete(trip._id)}
+                    className="text-red-600 hover:underline"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={() => handleDelete(trip._id)}
-                className="text-red-600 hover:underline"
-              >
-                Delete
-              </button>
+              
+              {/* Photo Gallery - Expanded View */}
+              {expandedTrip === trip._id && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <TripPhotoGallery
+                    photos={trip.photos || []}
+                    onAddPhoto={handleAddPhoto}
+                    onRemovePhoto={handleRemovePhoto}
+                    tripId={trip._id}
+                  />
+                </div>
+              )}
             </div>
           ))
         )}

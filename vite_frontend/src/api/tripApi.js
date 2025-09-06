@@ -40,5 +40,37 @@ export const deleteTrip = async (id) => {
   }
 };
 
+// Photo management functions
+export const addTripPhoto = async (tripId, photoData) => {
+  try {
+    const res = await axios.post(`/trips/${tripId}/photos`, photoData);
+    return res.data;
+  } catch (error) {
+    console.error("Error adding trip photo:", error);
+    throw error;
+  }
+};
+
+export const removeTripPhoto = async (tripId, photoIndex) => {
+  try {
+    const res = await axios.delete(`/trips/${tripId}/photos/${photoIndex}`);
+    return res.data;
+  } catch (error) {
+    console.error("Error removing trip photo:", error);
+    throw error;
+  }
+};
+
+// Trip status management
+export const updateTripStatus = async (tripId, status) => {
+  try {
+    const res = await axios.patch(`/trips/${tripId}/status`, { status });
+    return res.data;
+  } catch (error) {
+    console.error("Error updating trip status:", error);
+    throw error;
+  }
+};
+
 // Alias for backward compatibility
 export const fetchTrips = getTrips;
