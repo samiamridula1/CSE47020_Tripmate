@@ -28,6 +28,7 @@ npx nodemon server.js
 - User registration
 - Profile management
 - Trip creation
+- Trip template
 - Trip management
 - Trip report
 - Trip Photo gallery
@@ -35,8 +36,11 @@ npx nodemon server.js
 - Expense tracking
 - Experience sharing
 - Experience management
+- Experience list with report
+- Experience filter and search
 - Comment on experiences
 - Hotel booking and cancellation
 - Transport booking and cancellation
 - People search and suggestions
 - Recent activities
+- Trip location suggestion
