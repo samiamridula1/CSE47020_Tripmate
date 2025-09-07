@@ -1,8 +1,5 @@
 const Experience = require("../models/Experience");
 
-// @desc    Get all experiences
-// @route   GET /api/experiences
-// @access  Public
 const getAllExperiences = async (req, res) => {
     try {
         const experiences = await Experience.find().populate('userId', 'name email');
@@ -13,9 +10,6 @@ const getAllExperiences = async (req, res) => {
     }
 };
 
-// @desc    Create a new experience
-// @route   POST /api/experiences
-// @access  Public
 const createExperience = async (req, res) => {
     try {
         const { story, userId, location, imageBase64 } = req.body;
@@ -42,9 +36,6 @@ const createExperience = async (req, res) => {
     }
 };
 
-// @desc    Get featured experiences
-// @route   GET /api/experiences/featured
-// @access  Public
 const getFeaturedExperiences = async (req, res) => {
     try {
         const featured = await Experience.find({ isFeatured: true }).populate('userId', 'name email');
@@ -55,9 +46,6 @@ const getFeaturedExperiences = async (req, res) => {
     }
 };
 
-// @desc    Get experiences by user
-// @route   GET /api/experiences/user/:userId
-// @access  Public
 const getUserExperiences = async (req, res) => {
     try {
         const experiences = await Experience.find({ userId: req.params.userId }).populate('userId', 'name email');
@@ -68,9 +56,6 @@ const getUserExperiences = async (req, res) => {
     }
 };
 
-// @desc    Update an experience
-// @route   PUT /api/experiences/:id
-// @access  Public
 const updateExperience = async (req, res) => {
     try {
         const { id } = req.params;
@@ -101,9 +86,6 @@ const updateExperience = async (req, res) => {
     }
 };
 
-// @desc    Delete an experience
-// @route   DELETE /api/experiences/:id
-// @access  Public
 const deleteExperience = async (req, res) => {
     try {
         const { id } = req.params;

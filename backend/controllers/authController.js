@@ -1,8 +1,5 @@
 const User = require('../models/User');
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
-// @access  Public
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
@@ -34,9 +31,6 @@ const registerUser = async (req, res) => {
     }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
@@ -70,9 +64,6 @@ const loginUser = async (req, res) => {
     }
 };
 
-// @desc    Get user profile
-// @route   GET /api/auth/profile/:id
-// @access  Public
 const getUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.params.id).select('-password');

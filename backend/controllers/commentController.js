@@ -1,9 +1,6 @@
 const Comment = require('../models/Comment');
 const User = require('../models/User');
 
-// @desc    Get comments for an experience
-// @route   GET /api/comments/experience/:experienceId
-// @access  Public
 const getExperienceComments = async (req, res) => {
     try {
         const comments = await Comment.find({ experienceId: req.params.experienceId })
@@ -16,9 +13,6 @@ const getExperienceComments = async (req, res) => {
     }
 };
 
-// @desc    Add a comment to an experience
-// @route   POST /api/comments
-// @access  Public
 const createComment = async (req, res) => {
     try {
         const { content, userId, experienceId } = req.body;
@@ -52,9 +46,6 @@ const createComment = async (req, res) => {
     }
 };
 
-// @desc    Update a comment
-// @route   PUT /api/comments/:id
-// @access  Public
 const updateComment = async (req, res) => {
     try {
         const { content, userId } = req.body;
@@ -80,9 +71,6 @@ const updateComment = async (req, res) => {
     }
 };
 
-// @desc    Delete a comment
-// @route   DELETE /api/comments/:commentId
-// @access  Public
 const deleteComment = async (req, res) => {
     try {
         const { userId } = req.body;

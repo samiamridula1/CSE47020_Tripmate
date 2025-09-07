@@ -1,8 +1,5 @@
 const User = require("../models/User");
 
-// @desc    Get user profile
-// @route   GET /api/users/:firebaseUid
-// @access  Public
 const getUserProfile = async (req, res) => {
     try {
         const user = await User.findOne({
@@ -17,15 +14,10 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-// @desc    Create or update user profile
-// @route   POST /api/users/profile
-// @access  Public
 const saveUserProfile = async (req, res) => {
     try {
         const { firebaseUid, name, email, avatar, bio, interests } = req.body;
-
         let user = await User.findOne({ firebaseUid });
-
         if (user) {
             user.name = name;
             user.email = email;
@@ -44,33 +36,24 @@ const saveUserProfile = async (req, res) => {
             });
             await user.save();
         }
-
         res.json(user);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// @desc    Delete user
-// @route   DELETE /api/users/:id
-// @access  Public
 const deleteUser = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
-
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
-
         res.json({ message: "User deleted successfully" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// @desc    Get all users
-// @route   GET /api/users
-// @access  Public
 const getAllUsers = async (req, res) => {
     try {
         const users = await User.find().select("-firebaseUid");
@@ -80,9 +63,6 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-// @desc    Demo login for testing
-// @route   POST /api/users/demo-login
-// @access  Public
 const demoLogin = async (req, res) => {
     try {
         const { email, password } = req.body;

@@ -68,9 +68,6 @@ const demoTripsData = {
     ],
 };
 
-// @desc    Get trips for a user
-// @route   GET /api/trips/:userId
-// @access  Public
 const getUserTrips = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -89,9 +86,6 @@ const getUserTrips = async (req, res) => {
     }
 };
 
-// @desc    Get all trips (for activity feed)
-// @route   GET /api/trips
-// @access  Public
 const getAllTrips = async (req, res) => {
     try {
         const trips = await Trip.find().sort({ createdAt: -1 });
