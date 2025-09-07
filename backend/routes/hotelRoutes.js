@@ -1,50 +1,23 @@
 const express = require('express');
+const {
+  getAllHotels,
+  createHotelBooking,
+  getAllHotelBookings,
+  getUserHotelBookings,
+} = require('../controllers/hotelController');
+
 const router = express.Router();
-const Hotel = require('../models/Hotel');
 
 // GET: Get all available hotels
-router.get('/', async (req, res) => {
-  try {
-    const hotels = await Hotel.find();
-    res.json(hotels);
-  } catch (err) {
-    console.error('Error fetching hotels:', err);
-    res.status(500).json({ error: "Failed to fetch hotels" });
-  }
-});
+router.get('/', getAllHotels);
 
 // POST: Add a hotel booking
-router.post('/bookings', async (req, res) => {
-  try {
-    const newHotel = new Hotel(req.body);
-    const savedHotel = await newHotel.save();
-    res.status(201).json(savedHotel);
-  } catch (err) {
-    console.error('Error saving hotel booking:', err);
-    res.status(500).json({ error: "Failed to save hotel booking" });
-  }
-});
+router.post('/bookings', createHotelBooking);
 
 // GET: Get all hotel bookings (for activity feed)
-router.get('/bookings', async (req, res) => {
-  try {
-    const hotels = await Hotel.find().sort({ createdAt: -1 });
-    res.status(200).json(hotels);
-  } catch (err) {
-    console.error('Error fetching all hotel bookings:', err);
-    res.status(500).json({ error: "Failed to fetch hotel bookings" });
-  }
-});
+router.get('/bookings', getAllHotelBookings);
 
 // GET: Get hotel bookings for a user
-router.get('/bookings/:userId', async (req, res) => {
-  try {
-    const hotels = await Hotel.find({ userId: req.params.userId });
-    res.status(200).json(hotels);
-  } catch (err) {
-    console.error('Error fetching hotel bookings:', err);
-    res.status(500).json({ error: "Failed to fetch hotel bookings" });
-  }
-});
+router.get('/bookings/:userId', getUserHotelBookings);
 
 module.exports = router;

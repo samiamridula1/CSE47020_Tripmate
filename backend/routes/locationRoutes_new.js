@@ -21,5 +21,3 @@ router.get("/:id", getLocationById);
 router.post("/", createLocation);
 
 module.exports = router;
-
-module.exports = router;
