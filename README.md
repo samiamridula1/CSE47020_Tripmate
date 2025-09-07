@@ -1,19 +1,42 @@
-# Tripmate - Simple Travel Planning Application
+# Tripmate
 
-**Tripmate** is a personal travel planning web application where users can create, organize, and collaborate on trips with their friends.
+Tripmate is a web application for planning and managing trips. Users can create trips, manage checklists, track expenses, share experiences, and collaborate with friends.
 
 ## Tech Stack
-- Frontend: React.js
-- Backend: Express.js (Node.js)
+- Frontend: React (Vite)
+- Backend: Express (Node.js)
 - Database: MongoDB
 
-## Run Project
-Go to corresponding directory and run the following commands in separately:
-- Frontend: npm run dev
-- Backend: npx nodemon server.js
+## Getting Started
+To run the project locally:
 
-## Features (Sprint 1)
-- User Profile Creation (Name, Avatar, Interests)
-- Edit Profile
-- Create/Manage Trips (Destination, Notes, Dates)
-- MERN Stack Setup & Integration
+**Frontend**
+```
+cd vite_frontend
+npm install
+npm run dev
+```
+
+**Backend**
+```
+cd backend
+npm install
+npx nodemon server.js
+```
+
+## Main Features
+- User registration
+- Profile management
+- Trip creation
+- Trip management
+- Trip report
+- Trip Photo gallery
+- Packing checklist
+- Expense tracking
+- Experience sharing
+- Experience management
+- Comment on experiences
+- Hotel booking and cancellation
+- Transport booking and cancellation
+- People search and suggestions
+- Recent activities
