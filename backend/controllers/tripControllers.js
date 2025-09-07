@@ -81,10 +81,24 @@ const getUserTrips = async (req, res) => {
         }
 
         // Otherwise, try to get trips from database
-        const trips = await Trip.find({ userId: userId });
+        const trips = await Trip.find({ userId: userId }).sort({ createdAt: -1 });
         res.json(trips);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Error fetching user trips:', error);
+        res.status(500).json({ message: 'Error fetching trips', error: error.message });
+    }
+};
+
+// @desc    Get all trips (for activity feed)
+// @route   GET /api/trips
+// @access  Public
+const getAllTrips = async (req, res) => {
+    try {
+        const trips = await Trip.find().sort({ createdAt: -1 });
+        res.json(trips);
+    } catch (error) {
+        console.error('Error fetching all trips:', error);
+        res.status(500).json({ message: 'Error fetching trips', error: error.message });
     }
 };
 
@@ -93,12 +107,12 @@ const getUserTrips = async (req, res) => {
 // @access  Public
 const createTrip = async (req, res) => {
     try {
-        const { userId, destination, date, details } = req.body;
-        const newTrip = new Trip({ userId, destination, date, details });
-        const savedTrip = await newTrip.save();
-        res.json(savedTrip);
+        const trip = new Trip(req.body);
+        await trip.save();
+        res.status(201).json(trip);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Error creating trip:', error);
+        res.status(500).json({ message: 'Error creating trip', error: error.message });
     }
 };
 
@@ -112,12 +126,13 @@ const updateTrip = async (req, res) => {
         });
 
         if (!trip) {
-            return res.status(404).json({ error: "Trip not found" });
+            return res.status(404).json({ message: "Trip not found" });
         }
 
         res.json(trip);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Error updating trip:', error);
+        res.status(500).json({ message: 'Error updating trip', error: error.message });
     }
 };
 
@@ -129,18 +144,95 @@ const deleteTrip = async (req, res) => {
         const trip = await Trip.findByIdAndDelete(req.params.id);
 
         if (!trip) {
-            return res.status(404).json({ error: "Trip not found" });
+            return res.status(404).json({ message: "Trip not found" });
         }
 
         res.json({ message: "Trip deleted successfully" });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Error deleting trip:', error);
+        res.status(500).json({ message: 'Error deleting trip', error: error.message });
+    }
+};
+
+// @desc    Add photo to trip
+// @route   POST /api/trips/:id/photos
+// @access  Public
+const addTripPhoto = async (req, res) => {
+    try {
+        const trip = await Trip.findById(req.params.id);
+        if (!trip) {
+            return res.status(404).json({ message: 'Trip not found' });
+        }
+        
+        trip.photos.push(req.body);
+        await trip.save();
+        res.json(trip);
+    } catch (error) {
+        console.error('Error adding photo to trip:', error);
+        res.status(500).json({ message: 'Error adding photo', error: error.message });
+    }
+};
+
+// @desc    Remove photo from trip
+// @route   DELETE /api/trips/:id/photos/:photoIndex
+// @access  Public
+const removeTripPhoto = async (req, res) => {
+    try {
+        const trip = await Trip.findById(req.params.id);
+        if (!trip) {
+            return res.status(404).json({ message: 'Trip not found' });
+        }
+        
+        const photoIndex = parseInt(req.params.photoIndex);
+        if (photoIndex < 0 || photoIndex >= trip.photos.length) {
+            return res.status(400).json({ message: 'Invalid photo index' });
+        }
+        
+        trip.photos.splice(photoIndex, 1);
+        await trip.save();
+        res.json(trip);
+    } catch (error) {
+        console.error('Error removing photo from trip:', error);
+        res.status(500).json({ message: 'Error removing photo', error: error.message });
+    }
+};
+
+// @desc    Update trip status
+// @route   PATCH /api/trips/:id/status
+// @access  Public
+const updateTripStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const validStatuses = ['planned', 'in-progress', 'completed', 'cancelled'];
+        
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Invalid status' });
+        }
+        
+        const trip = await Trip.findByIdAndUpdate(
+            req.params.id, 
+            { status }, 
+            { new: true }
+        );
+        
+        if (!trip) {
+            return res.status(404).json({ message: 'Trip not found' });
+        }
+        
+        res.json(trip);
+    } catch (error) {
+        console.error('Error updating trip status:', error);
+        res.status(500).json({ message: 'Error updating status', error: error.message });
     }
 };
 
 module.exports = {
+    getAllTrips,
     getUserTrips,
     createTrip,
     updateTrip,
     deleteTrip,
+    addTripPhoto,
+    removeTripPhoto,
+    updateTripStatus,
 };
